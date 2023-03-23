@@ -1,11 +1,11 @@
 class Wafer:
 
-    def __init__(self, wafer_ID):
-        self.wafer_ID = wafer_ID
+    def __init__(self, waferID):
+        self.waferID = waferID
 
-    def setWafer_ID(self, wafer_ID):
-        self.wafer_ID = wafer_ID
+    def setWaferID(self, waferID):
+        self.waferID = waferID
 
-    def getWafer_ID(self):
-        return self.wafer_ID
+    def getWaferID(self):
+        return self.waferID
     

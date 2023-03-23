@@ -1,21 +1,22 @@
 class Batch:
 
-    def __init__(self, batch_ID, size):
-        self.batch_ID = batch_ID
+    def __init__(self, batchID, size):
+        self.batchID = batchID
         self.size = size
         self.wafers = []
 
     def setBatchID(self, batchID):
-        self.batch_ID = batchID
+        self.batchID = batchID
 
     def setSize(self, size):
         self.size = size
 
     def setWafers(self, wafers):
-        self.wafers = wafers
+        for wafer in wafers:
+            self.wafers.append(wafer)
     
     def getBatchID(self):
-        return self.batch_ID
+        return self.batchID
 
     def getSize(self):
         return self.size
