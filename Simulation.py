@@ -27,7 +27,7 @@ def createProductionLine():
     unit1 = U.Unit('Unit1')
     unit2 = U.Unit('Unit2')
     unit3 = U.Unit('Unit2')
-    
+    task1.addToInputBuffer(batch1)
     unit1.addTask(task1)
     unit1.addTask(task3)
     unit1.addTask(task6)
@@ -40,7 +40,7 @@ def createProductionLine():
     unit3.addTask(task4)
     unit3.addTask(task8)
 
-    productionLine = PL.ProductionLine()
+    productionLine = PL.ProductionLine('Wafer Production')
     productionLine.addUnit(unit1)
     productionLine.addUnit(unit2)
     productionLine.addUnit(unit3)
@@ -50,13 +50,21 @@ def createProductionLine():
 def simulation():
     productionLine = createProductionLine()
 
-
-
-    while productionLine.getOutputBuffer() < 1000:
+    while productionLine.getOutputBuffer() < 50:
         productionLine.incrementTime()
+        for unit in productionLine.getUnits():
+            unit.decrementDownCounter()
+            if (unit.getDownCounter() == 0):
+                productionLine.passBatchToNextTask(unit)
+                unit.setAvailable()
+            if (unit.getAvailability()):
+                unit.runNextTask()
+    return productionLine.getTime()
 
 
-    pass
+
+
+    
 
 
 simulation()

@@ -6,6 +6,7 @@ class Unit:
     def __init__(self, unitID):
         self.unitID = unitID
         self.tasks = []
+        self.activeTask = None
         self.downCounter = 0
         self.isAvailable = True
 
@@ -39,12 +40,24 @@ class Unit:
     def getAvailability(self):
         return self.isAvailable
 
-    def whichTaskIsNext(self):
+    def getActiveTask(self):
+        return self.activeTask
+
+    def setActiveTask(self, task):
+        self.activeTask = task
+
+
+    def runNextTask(self):
         if self.getAvailability():
             availableTasks = []
             for task in self.getTasks():
                 if len(task.getInputBuffer()) != 0:
                     availableTasks.append(task)
-            return max(availableTasks, key=lambda x: x.getProcessingTime())
+                    print(task)
+            nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
+            nextTask.setBatch(nextTask.getNextBatch())
+            self.setActiveTask(nextTask)
+            self.setDownCounter(nextTask.getProcessingTime() * nextTask.removeFromInputBuffer().getSize() + 2)
+            self.setOccupied()
 
     #preformTimeStep

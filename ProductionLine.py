@@ -35,7 +35,23 @@ class ProductionLine:
     def getOutputBuffer(self):
         return self.outputBuffer
 
+    def getTime(self):
+        return self.time
 
-
+    def getTaskByID(self, taskID):
+        for unit in self.getUnits():
+            for task in unit:
+                if task.getTaskID() == taskID:
+                    return task
+            
+    def passBatchToNextTask(self, unit):
+        completedBatch = unit.getActiveTask().getBatch()
+        taskID = unit.getActiveTask().getTaskID()
+        if taskID == 'Task9':
+            return print('FERDIG')
+        receivingTask = self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}')
+        receivingTask.addToInputBuffer(completedBatch)
+        unit.getActiveTask.setBatch(None)
+        unit.setActiveTask(None)
 
 

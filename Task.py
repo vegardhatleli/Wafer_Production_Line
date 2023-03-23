@@ -3,6 +3,7 @@ class Task:
     def __init__(self, taskID, procesingTime):
         self.taskID = taskID
         self.inputBuffer = []
+        self.batch = None
         self.processingTime = procesingTime
         self.isAvailable = True
     
@@ -16,7 +17,9 @@ class Task:
         self.inputBuffer.append(batch)
 
     def removeFromInputBuffer(self):
+        batch = self.inputBuffer[0]
         self.inputBuffer.remove(self.inputBuffer[0])
+        return batch
 
     def getInputBuffer(self):
         return self.inputBuffer
@@ -32,3 +35,12 @@ class Task:
     
     def getAvailability(self):
         return self.isAvailable
+
+    def setBatch(self, batch):
+        self.batch = batch
+
+    def getBatch(self):
+        return self.batch
+
+    def getNextBatch(self):
+        return self.inputBuffer[0]
