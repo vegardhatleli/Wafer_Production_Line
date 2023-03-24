@@ -59,6 +59,7 @@ def simulation():
                 unit.setAvailable()
             if (unit.getAvailability()):
                 unit.runNextTask()
+                
     return productionLine.getTime()
 
 

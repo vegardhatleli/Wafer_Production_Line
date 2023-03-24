@@ -48,16 +48,21 @@ class Unit:
 
 
     def runNextTask(self):
-        if self.getAvailability():
-            availableTasks = []
-            for task in self.getTasks():
-                if len(task.getInputBuffer()) != 0:
-                    availableTasks.append(task)
-                    print(task)
-            nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
-            nextTask.setBatch(nextTask.getNextBatch())
-            self.setActiveTask(nextTask)
-            self.setDownCounter(nextTask.getProcessingTime() * nextTask.removeFromInputBuffer().getSize() + 2)
-            self.setOccupied()
+        availableTasks = []
+        for task in self.getTasks():
+            if len(task.getInputBuffer()) > 0:
+                availableTasks.append(task)
+                print('###')
+                print(len(task.getInputBuffer()))
+        print('Her skal den komme under')
+        print(availableTasks)
+        if len(availableTasks) == 0:
+            print('Ingen mulige batches å hente')
+            return
+        nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
+        nextTask.setBatch(nextTask.getNextBatch())
+        self.setActiveTask(nextTask)
+        self.setDownCounter(nextTask.getProcessingTime() * nextTask.removeFromInputBuffer().getSize() + 2)
+        self.setOccupied()
 
     #preformTimeStep

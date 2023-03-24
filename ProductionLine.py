@@ -49,8 +49,9 @@ class ProductionLine:
         taskID = unit.getActiveTask().getTaskID()
         if taskID == 'Task9':
             return print('FERDIG')
-        receivingTask = self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}')
-        receivingTask.addToInputBuffer(completedBatch)
+        self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}').addToInputBuffer(completedBatch)
+        #receivingTask = self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}')
+        #receivingTask.addToInputBuffer(completedBatch)
         unit.getActiveTask.setBatch(None)
         unit.setActiveTask(None)
 
