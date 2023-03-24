@@ -15,18 +15,18 @@ def createProductionLine():
     batch1 = B.Batch('Batch1', 50)
     batch1.setWafers(wafers)
 
-    task1 = T.Task('Task1', 2.5)
-    task2 = T.Task('Task2', 5.5)
-    task3 = T.Task('Task3', 3.2)
-    task4 = T.Task('Task4', 5.0)
-    task5 = T.Task('Task5', 2.8)
-    task6 = T.Task('Task6', 2.5)
-    task7 = T.Task('Task7', 3.0)
-    task8 = T.Task('Task8', 3.9)
-    task9 = T.Task('Task9', 2.3)
+    task1 = T.Task('Task1', 0.5)
+    task2 = T.Task('Task2', 3.5)
+    task3 = T.Task('Task3', 1.2)
+    task4 = T.Task('Task4', 3.0)
+    task5 = T.Task('Task5', 0.8)
+    task6 = T.Task('Task6', 0.5)
+    task7 = T.Task('Task7', 1.0)
+    task8 = T.Task('Task8', 1.9)
+    task9 = T.Task('Task9', 0.3)
     unit1 = U.Unit('Unit1')
     unit2 = U.Unit('Unit2')
-    unit3 = U.Unit('Unit2')
+    unit3 = U.Unit('Unit3')
     task1.addToInputBuffer(batch1)
     unit1.addTask(task1)
     unit1.addTask(task3)
@@ -49,17 +49,17 @@ def createProductionLine():
 
 def simulation():
     productionLine = createProductionLine()
-
-    while productionLine.getOutputBuffer() < 50:
+    while len(productionLine.getOutputBuffer()) < 1:
         productionLine.incrementTime()
         for unit in productionLine.getUnits():
-            unit.decrementDownCounter()
+            if unit.getDownCounter() > 0:
+                unit.decrementDownCounter()
+                print(unit.getDownCounter())
+            if (unit.getAvailability()):
+                unit.runNextTask()
             if (unit.getDownCounter() == 0):
                 productionLine.passBatchToNextTask(unit)
                 unit.setAvailable()
-            if (unit.getAvailability()):
-                unit.runNextTask()
-                
     return productionLine.getTime()
 
 
@@ -68,4 +68,4 @@ def simulation():
     
 
 
-simulation()
+print(simulation())

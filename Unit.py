@@ -30,6 +30,7 @@ class Unit:
 
     def decrementDownCounter(self):
         self.downCounter -= 0.1
+        self.downCounter = round(self.downCounter, 1)
 
     def setAvailable(self):
         self.isAvailable = True
@@ -46,23 +47,26 @@ class Unit:
     def setActiveTask(self, task):
         self.activeTask = task
 
+    def isThereAvailableBatches(self):
+        for task in self.getTasks():
+            if len(task.getInputBuffer()) > 0:
+                return True
+            else:
+                return False
 
+    
     def runNextTask(self):
         availableTasks = []
         for task in self.getTasks():
             if len(task.getInputBuffer()) > 0:
                 availableTasks.append(task)
-                print('###')
-                print(len(task.getInputBuffer()))
-        print('Her skal den komme under')
-        print(availableTasks)
         if len(availableTasks) == 0:
-            print('Ingen mulige batches å hente')
+            #rint('Ingen mulige batches å hente')
             return
         nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
         nextTask.setBatch(nextTask.getNextBatch())
         self.setActiveTask(nextTask)
-        self.setDownCounter(nextTask.getProcessingTime() * nextTask.removeFromInputBuffer().getSize() + 2)
+        self.setDownCounter(float(nextTask.getProcessingTime()) * float(nextTask.getBatch().getSize()) + 2.0)
         self.setOccupied()
 
     #preformTimeStep

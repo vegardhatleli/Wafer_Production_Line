@@ -9,7 +9,7 @@ class ProductionLine:
         self.productionLineID = productionLineID
         self.units = []
         self.time = 0
-        self.outputBuffer = 0
+        self.outputBuffer = []
 
     def getProductionLineID(self):
         return self.productionLineID
@@ -28,9 +28,10 @@ class ProductionLine:
 
     def incrementTime(self):
         self.time += 0.1
+        self.time = round(self.time, 1)
 
     def addOutputBuffer(self, batch):
-        self.outputBuffer += batch.getSize()
+        self.outputBuffer.append(batch)
 
     def getOutputBuffer(self):
         return self.outputBuffer
@@ -40,19 +41,33 @@ class ProductionLine:
 
     def getTaskByID(self, taskID):
         for unit in self.getUnits():
-            for task in unit:
+            for task in unit.getTasks():
                 if task.getTaskID() == taskID:
                     return task
             
     def passBatchToNextTask(self, unit):
+        if (unit.getActiveTask() == None):
+            return
         completedBatch = unit.getActiveTask().getBatch()
         taskID = unit.getActiveTask().getTaskID()
         if taskID == 'Task9':
+            self.addOutputBuffer(completedBatch)
             return print('FERDIG')
         self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}').addToInputBuffer(completedBatch)
-        #receivingTask = self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}')
-        #receivingTask.addToInputBuffer(completedBatch)
-        unit.getActiveTask.setBatch(None)
+        unit.getActiveTask().setBatch(None)
         unit.setActiveTask(None)
 
+
+pl = ProductionLine('1')
+task1 = T.Task('Task1',1)
+task2 = T.Task('Task2',1)
+unit = U.Unit('Unit1')
+unit.addTask(task1)
+unit.addTask(task2)
+pl.addUnit(unit)
+hei = 'Task1'
+
+print(pl.getTaskByID(f'{hei[:4]}{int(hei[4:5])+1}').getTaskID())
+
+print(f'{hei[:4]}{int(hei[4:5])+1}')
 

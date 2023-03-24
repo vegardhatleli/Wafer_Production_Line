@@ -43,4 +43,6 @@ class Task:
         return self.batch
 
     def getNextBatch(self):
-        return self.inputBuffer[0]
+        batch = self.inputBuffer[0]
+        self.inputBuffer.remove(batch)
+        return batch
