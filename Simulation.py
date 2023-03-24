@@ -10,7 +10,17 @@ def createListOfWafers(numberOfWafers):
         listOfWafers.append(W.Wafer(f'Wafer{i}'))
     return listOfWafers
 
+def createListOfBatches(NumberofBatches, NumberOfWafers):
+    batches = []
+    for i in range(NumberofBatches):
+        wafers = createListOfWafers(NumberOfWafers)
+        batch = B.Batch(f'Batch{i+1}', NumberOfWafers)
+        batch.setWafers(wafers)
+        batches.append(batch)
+    return batches
+
 def createProductionLine():
+    batches = createListOfBatches(20,50)
     wafers = createListOfWafers(50)
     batch1 = B.Batch('Batch1', 50)
     batch1.setWafers(wafers)
@@ -27,7 +37,6 @@ def createProductionLine():
     unit1 = U.Unit('Unit1')
     unit2 = U.Unit('Unit2')
     unit3 = U.Unit('Unit3')
-    task1.addToInputBuffer(batch1)
     unit1.addTask(task1)
     unit1.addTask(task3)
     unit1.addTask(task6)
@@ -44,28 +53,26 @@ def createProductionLine():
     productionLine.addUnit(unit1)
     productionLine.addUnit(unit2)
     productionLine.addUnit(unit3)
+    productionLine.setStorage(batches)
 
     return productionLine
 
 def simulation():
     productionLine = createProductionLine()
-    while len(productionLine.getOutputBuffer()) < 1:
+    while len(productionLine.getOutputBuffer()) < 20:
+        if (productionLine.getTime() % 653.5 == 0 and len(productionLine.getStorage()) > 0):
+            productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
         productionLine.incrementTime()
         for unit in productionLine.getUnits():
             if unit.getDownCounter() > 0:
                 unit.decrementDownCounter()
-                print(unit.getDownCounter())
+                #print(unit.getDownCounter())
             if (unit.getAvailability()):
                 unit.runNextTask()
             if (unit.getDownCounter() == 0):
                 productionLine.passBatchToNextTask(unit)
                 unit.setAvailable()
     return productionLine.getTime()
-
-
-
-
-    
 
 
 print(simulation())
