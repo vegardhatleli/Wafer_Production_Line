@@ -74,7 +74,7 @@ class ProductionLine:
             return batch
         return []
 
-
+'''
 pl = ProductionLine('1')
 task1 = T.Task('Task1',1)
 task2 = T.Task('Task2',1)
@@ -87,4 +87,4 @@ hei = 'Task1'
 print(pl.getTaskByID(f'{hei[:4]}{int(hei[4:5])+1}').getTaskID())
 
 print(f'{hei[:4]}{int(hei[4:5])+1}')
-
+'''

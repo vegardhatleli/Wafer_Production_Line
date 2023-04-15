@@ -3,6 +3,7 @@ import Batch as B
 import Task as T
 import Unit as U
 import ProductionLine as PL
+import Scheduler as S
 
 def createListOfWafers(numberOfWafers):
     listOfWafers = []
@@ -49,24 +50,34 @@ def createProductionLine():
     unit3.addTask(task4)
     unit3.addTask(task8)
 
+
     productionLine = PL.ProductionLine('Wafer Production')
     productionLine.addUnit(unit1)
     productionLine.addUnit(unit2)
     productionLine.addUnit(unit3)
     productionLine.setStorage(batches)
 
+    scheduler1 = S.Scheduler(1,unit1,productionLine)
+    scheduler2 = S.Scheduler(2,unit2,productionLine)
+    scheduler3 = S.Scheduler(3,unit3,productionLine)
+
+
+    unit1.setScheduler(scheduler1)
+    unit2.setScheduler(scheduler2)
+    unit3.setScheduler(scheduler3)
+
+
     return productionLine
 
 def simulation():
     productionLine = createProductionLine()
     while len(productionLine.getOutputBuffer()) < 20:
-        if (productionLine.getTime() % 653.5 == 0 and len(productionLine.getStorage()) > 0):
+        if (productionLine.getTime() % 100 == 0 and len(productionLine.getStorage()) > 0):
             productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
         productionLine.incrementTime()
         for unit in productionLine.getUnits():
             if unit.getDownCounter() > 0:
                 unit.decrementDownCounter()
-                #print(unit.getDownCounter())
             if (unit.getAvailability()):
                 unit.runNextTask()
             if (unit.getDownCounter() == 0):

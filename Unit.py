@@ -1,5 +1,5 @@
 import Task as t
-
+import Action as A
 
 class Unit:
 
@@ -9,6 +9,7 @@ class Unit:
         self.activeTask = None
         self.downCounter = 0
         self.isAvailable = True
+        self.scheduler = None
 
     def getUnitID(self):
         return self.unitID
@@ -47,6 +48,9 @@ class Unit:
     def setActiveTask(self, task):
         self.activeTask = task
 
+    def setScheduler(self, scheduler):
+        self.scheduler = scheduler
+
     def isThereAvailableBatches(self):
         for task in self.getTasks():
             if len(task.getInputBuffer()) > 0:
@@ -61,10 +65,13 @@ class Unit:
             if len(task.getInputBuffer()) > 0:
                 availableTasks.append(task)
         if len(availableTasks) == 0:
-            #rint('Ingen mulige batches å hente')
             return
-        nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
-        nextTask.setBatch(nextTask.getNextBatch())
+        #nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
+        self.scheduler.reciveTasks(availableTasks)
+        nextAction = self.scheduler.nextAction()
+        nextTask = nextAction.getTask()
+        nextTask.setBatch(nextAction.getBatch())
+        #nextTask.setBatch(nextTask.getNextBatch())
         self.setActiveTask(nextTask)
         self.setDownCounter(float(nextTask.getProcessingTime()) * float(nextTask.getBatch().getSize()) + 2.0)
         self.setOccupied()
