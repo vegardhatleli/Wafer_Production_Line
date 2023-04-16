@@ -58,7 +58,8 @@ class ProductionLine:
             unit.setActiveTask(None)
             print(f'{completedBatch.getBatchID()} done')
             return
-        self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}').addToInputBuffer(completedBatch)
+        unit.getActiveTask().getNextTask().addToInputBuffer(completedBatch)
+        #self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}').addToInputBuffer(completedBatch)
         unit.getActiveTask().setBatch(None)
         unit.setActiveTask(None)
 
@@ -86,7 +87,8 @@ class ProductionLine:
         for task in pendingTasks:
             if task.taskID == 'Task9':
                 return task
-            nextTask = self.getTaskByID(f'{task.taskID[:4]}{int(task.taskID[4:5])+1}')
+            #nextTask = self.getTaskByID(f'{task.taskID[:4]}{int(task.taskID[4:5])+1}')
+            nextTask = task.getNextTask()
             if (nextTask.inputBufferAvalible(task.getInputBuffer()[0].getSize())):
                 #print(f'{nextTask.getTaskID()} ## {nextTask.getSizeOfInputBuffer()}')
                 return task

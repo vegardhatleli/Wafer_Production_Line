@@ -6,7 +6,14 @@ class Task:
         self.batch = None
         self.processingTime = procesingTime
         self.isAvailable = True
+        self.nextTask = None
     
+    def setNextTask(self, task):
+        self.nextTask = task
+
+    def getNextTask(self):
+        return self.nextTask
+
     def getTaskID(self):
         return self.taskID
 

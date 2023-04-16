@@ -1,3 +1,4 @@
+import sys
 import Wafer as W
 import Batch as B
 import Task as T
@@ -34,6 +35,16 @@ def createProductionLine():
     task7 = T.Task('Task7', 1.0)
     task8 = T.Task('Task8', 1.9)
     task9 = T.Task('Task9', 0.3)
+
+    task1.setNextTask(task2)
+    task2.setNextTask(task3)
+    task3.setNextTask(task4)
+    task4.setNextTask(task5)
+    task5.setNextTask(task6)
+    task6.setNextTask(task7)
+    task7.setNextTask(task8)
+    task8.setNextTask(task9)
+
     unit1 = U.Unit('Unit1')
     unit2 = U.Unit('Unit2')
     unit3 = U.Unit('Unit3')
@@ -58,6 +69,8 @@ def createProductionLine():
     return productionLine
 
 def simulation():
+    f = open("output.out", "w")
+    sys.stdout = f
     productionLine = createProductionLine()
     while len(productionLine.getOutputBuffer()) < 20:
         if (productionLine.getTime() % 1 == 0 and len(productionLine.getStorage()) > 0):
