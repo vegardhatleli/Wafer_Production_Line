@@ -55,18 +55,11 @@ class Unit:
                 return False
 
     
-    def runNextTask(self):
-        availableTasks = []
-        for task in self.getTasks():
-            if len(task.getInputBuffer()) > 0:
-                availableTasks.append(task)
-        if len(availableTasks) == 0:
-            #rint('Ingen mulige batches å hente')
-            return
-        nextTask = max(availableTasks, key=lambda x: x.getProcessingTime())
-        nextTask.setBatch(nextTask.getNextBatch())
-        self.setActiveTask(nextTask)
-        self.setDownCounter(float(nextTask.getProcessingTime()) * float(nextTask.getBatch().getSize()) + 2.0)
+    def runNextTask(self, task, time):
+        task.setBatch(task.getNextBatch())
+        self.setActiveTask(task)
+        self.setDownCounter(float(task.getProcessingTime()) * float(task.getBatch().getSize()) + 2.0)
         self.setOccupied()
+        print(f' {self.getUnitID()} | {task.getTaskID()} | {task.getBatch().getBatchID()} | {time}')
 
     #preformTimeStep

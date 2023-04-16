@@ -46,3 +46,12 @@ class Task:
         batch = self.inputBuffer[0]
         self.inputBuffer.remove(batch)
         return batch
+
+    def inputBufferAvalible(self, size):
+        inputBufferSize = 0
+        for batch in self.inputBuffer:
+            inputBufferSize += batch.getSize()
+        if inputBufferSize + size > 120:
+            return False
+        else:
+            return True
