@@ -51,6 +51,7 @@ class ProductionLine:
             return
         completedBatch = unit.getActiveTask().getBatch()
         taskID = unit.getActiveTask().getTaskID()
+        #print(f'{completedBatch.getBatchID()} complete in {taskID}')
         if taskID == 'Task9':
             self.addOutputBuffer(completedBatch)
             unit.getActiveTask().setBatch(None)
@@ -74,17 +75,20 @@ class ProductionLine:
             return batch
         return []
 
-
-pl = ProductionLine('1')
-task1 = T.Task('Task1',1)
-task2 = T.Task('Task2',1)
-unit = U.Unit('Unit1')
-unit.addTask(task1)
-unit.addTask(task2)
-pl.addUnit(unit)
-hei = 'Task1'
-
-print(pl.getTaskByID(f'{hei[:4]}{int(hei[4:5])+1}').getTaskID())
-
-print(f'{hei[:4]}{int(hei[4:5])+1}')
-
+    def findNextTask(self, unit):
+        pendingTasks = []
+        for task in unit.getTasks():
+            if len(task.getInputBuffer()) > 0:
+                pendingTasks.append(task)
+        if len(pendingTasks) == 0:
+            return
+        pendingTasks.sort(key = lambda x: x.getProcessingTime() * x.getInputBuffer()[0].getSize() + 2.0)
+        for task in pendingTasks:
+            if task.taskID == 'Task9':
+                return task
+            nextTask = self.getTaskByID(f'{task.taskID[:4]}{int(task.taskID[4:5])+1}')
+            if (nextTask.inputBufferAvalible(task.getInputBuffer()[0].getSize())):
+                return task
+            
+        #print('All output buffers full, needs to wait')
+        return

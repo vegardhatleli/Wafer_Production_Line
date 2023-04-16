@@ -60,18 +60,21 @@ def createProductionLine():
 def simulation():
     productionLine = createProductionLine()
     while len(productionLine.getOutputBuffer()) < 20:
-        if (productionLine.getTime() % 653.5 == 0 and len(productionLine.getStorage()) > 0):
+        if (productionLine.getTime() % 1 == 0 and len(productionLine.getStorage()) > 0):
             productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
         productionLine.incrementTime()
         for unit in productionLine.getUnits():
             if unit.getDownCounter() > 0:
                 unit.decrementDownCounter()
-                #print(unit.getDownCounter())
-            if (unit.getAvailability()):
-                unit.runNextTask()
+
             if (unit.getDownCounter() == 0):
                 productionLine.passBatchToNextTask(unit)
                 unit.setAvailable()
+
+            if (unit.getAvailability()):
+                task = productionLine.findNextTask(unit)
+                if task != None:
+                    unit.runNextTask(task, productionLine.getTime())
     return productionLine.getTime()
 
 
