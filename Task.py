@@ -21,6 +21,13 @@ class Task:
         self.inputBuffer.remove(self.inputBuffer[0])
         return batch
 
+    def getSizeOfInputBuffer(self):
+        numberOfWafers = 0
+        for batch in self.inputBuffer:
+            numberOfWafers += batch.getSize()
+        return numberOfWafers
+
+
     def getInputBuffer(self):
         return self.inputBuffer
         
