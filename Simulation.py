@@ -6,6 +6,7 @@ import Batch as B
 import Task as T
 import Unit as U
 import ProductionLine as PL
+import math
 
 def createListOfWafers(numberOfWafers):
     listOfWafers = []
@@ -22,11 +23,27 @@ def createListOfBatches(NumberofBatches, NumberOfWafers):
         batches.append(batch)
     return batches
 
-def createProductionLine():
-    batches = createListOfBatches(20,50)
-    wafers = createListOfWafers(50)
-    batch1 = B.Batch('Batch1', 50)
-    batch1.setWafers(wafers)
+def createProductionLine(numberOfBatches, numberOfWafers, rest):
+    if rest == 0:
+        batches = createListOfBatches(numberOfBatches,numberOfWafers)
+
+    if rest <= 50:
+        batches = createListOfBatches(numberOfBatches,numberOfWafers)
+        wafers = createListOfWafers(rest)
+        restBatch = B.Batch(f'Batch{numberOfBatches+1}', rest)
+        restBatch.setWafers(wafers)
+        batches.append(restBatch)
+
+    if rest > 50:
+        batches = createListOfBatches(numberOfBatches,numberOfWafers)
+        wafers1 = createListOfWafers(math.ceil(rest/2))
+        wafers2 = createListOfWafers(math.floor(rest/2))
+        restBatch1 = B.Batch(f'Batch{numberOfBatches+1}', math.ceil(rest/2))
+        restBatch2 = B.Batch(f'Batch{numberOfBatches+1}', math.floor(rest/2))
+        restBatch1.setWafers(wafers1)
+        restBatch2.setWafers(wafers2)
+        batches.append(restBatch1)
+        batches.append(restBatch2)
 
     task1 = T.Task('Task1', 0.5)
     task2 = T.Task('Task2', 3.5)
@@ -70,11 +87,12 @@ def createProductionLine():
 
     return productionLine
 
-def simulation(inputInterval):
+def simulation(inputInterval, numberOfBatches, numberOfWafers, rest):
     f = open("output.out", "w")
     sys.stdout = f
-    productionLine = createProductionLine()
-    while len(productionLine.getOutputBuffer()) < 20:
+    productionLine = createProductionLine(numberOfBatches, numberOfWafers, rest)
+    while_parameter = len(productionLine.getStorage())
+    while len(productionLine.getOutputBuffer()) < while_parameter:
         if (productionLine.getTime() % inputInterval == 0 and len(productionLine.getStorage()) > 0):
             productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
         productionLine.incrementTime()
@@ -96,7 +114,7 @@ def simulation(inputInterval):
 
 def simulationWithHeuristic(inputInterval, orderUnit1, orderUnit2, orderUnit3):
     f = open("Task6/FinishedTimeWithDifferentHeuristic.txt", "a")
-    productionLine = createProductionLine()
+    productionLine = createProductionLine(20,50,0)
     while len(productionLine.getOutputBuffer()) < 20:
         if (productionLine.getTime() % inputInterval == 0 and len(productionLine.getStorage()) > 0):
             productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
@@ -118,24 +136,32 @@ def simulationWithHeuristic(inputInterval, orderUnit1, orderUnit2, orderUnit3):
     f.close()
     return
 
-
+def optimizeBatchSize():
+    totalTimes = []
+    numberOfWafersInBatch = []
+    all_batches = createAllPossibleBatches()
+    for batch in all_batches:
+        time, data = simulation(1, batch[0], batch[1], batch[2])
+        numberOfWafersInBatch.append(batch[1])
+        totalTimes.append(time)
+    return numberOfWafersInBatch, totalTimes
 
 def optimizeTimeBetweenBatches():
     graphData = []
     totalTimes = []
     intervals = [653.5, 500, 400, 300, 200, 100, 50, 25, 15, 10, 5, 2]
     for interval in intervals:
-        time, data = simulation(interval)
+        time, data = simulation(interval, 20, 50, 0)
         totalTimes.append(time)
         graphData.append(data)
 
     return intervals, totalTimes, graphData
 
 def createBatchFinishedTable(intervals, totalTimes):
-    f = open("Task5/FinishedTimeWithDifferentInterval.txt", "w")
-    f.write('{:<15} {:<15}\n'.format('Time Interval', 'Total time used'))
+    f = open("Task7/NumberOfWafersPerBatch.txt", "w")
+    f.write('{:<25} {:<15}\n'.format('NumberOfWafersPerBatch', 'Total time used'))
     for i in range(len(intervals)):
-        f.write("{:<15} {:<15}\n".format(f'{str(intervals[i])}', f'{str(totalTimes[i])}'))
+        f.write("{:<25} {:<15}\n".format(f'{str(intervals[i])}', f'{str(totalTimes[i])}'))
     f.close()
 
 def createBatchFinishedGraph(graphData):
@@ -153,6 +179,21 @@ def createBatchFinishedGraph(graphData):
     plt.title('Chart of finished time for each batch')
 
     plt.savefig('Task5/ReduceIntervalBetweenBatches')
+
+def createAllPossibleBatches():
+    allPossibleBatches = []
+    for i in range(20,51):
+        numberOfWafers = i
+        numberOfBatches = 1000 // i
+        rest = 1000 % i
+        if (rest != 0 and rest + numberOfWafers >= 50):
+            rest = numberOfWafers + rest
+            numberOfBatches -= 1
+        if (rest != 0 and rest + numberOfWafers < 50):
+            rest = numberOfWafers + rest
+        allPossibleBatches.append([numberOfBatches,numberOfWafers,rest])
+        print(f'Batches: {numberOfBatches}, wafers: {numberOfWafers} rest: {rest}')
+    return allPossibleBatches
 
 def createPermutationTable():
     f = open("Task6/FinishedTimeWithDifferentHeuristic.txt", "w")
@@ -173,4 +214,6 @@ def createPermutationTable():
      
 
 
-createPermutationTable()
+#createPermutationTable()
+#numberOfWafersPerBatch, totalTimes = optimizeBatchSize()
+#createBatchFinishedTable(numberOfWafersPerBatch, totalTimes)
