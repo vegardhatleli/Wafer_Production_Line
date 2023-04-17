@@ -58,16 +58,15 @@ class ProductionLine:
             return
         completedBatch = unit.getActiveTask().getBatch()
         taskID = unit.getActiveTask().getTaskID()
-        print(f'Task finished: {unit.getUnitID()} | {taskID} | {completedBatch.getBatchID()} | {self.getTime()}')
+        #print(f'Task finished: {unit.getUnitID()} | {taskID} | {completedBatch.getBatchID()} | {self.getTime()}')
         if taskID == 'Task9':
             self.addOutputBuffer(completedBatch)
             unit.getActiveTask().setBatch(None)
             unit.setActiveTask(None)
-            print(f'{completedBatch.getBatchID()} done')
+            #print(f'{completedBatch.getBatchID()} done')
             self.addBatchData(self.getTime())
             return
         unit.getActiveTask().getNextTask().addToInputBuffer(completedBatch)
-        #self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}').addToInputBuffer(completedBatch)
         unit.getActiveTask().setBatch(None)
         unit.setActiveTask(None)
 
@@ -95,11 +94,33 @@ class ProductionLine:
         for task in pendingTasks:
             if task.taskID == 'Task9':
                 return task
-            #nextTask = self.getTaskByID(f'{task.taskID[:4]}{int(task.taskID[4:5])+1}')
             nextTask = task.getNextTask()
             if (nextTask.inputBufferAvalible(task.getInputBuffer()[0].getSize())):
-                #print(f'{nextTask.getTaskID()} ## {nextTask.getSizeOfInputBuffer()}')
                 return task
             
-        #print('All output buffers full, needs to wait')
         return
+
+    def findNextTaskGiverOrder(self, unit, orderUnit1, orderUnit2, orderUnit3):
+        neworder1 = {orderUnit1[0] : 1, orderUnit1[1] : 2, orderUnit1[2] : 3, orderUnit1[3] : 4}
+        neworder2 = {orderUnit2[0] : 1, orderUnit2[1] : 2, orderUnit2[2] : 3}
+        neworder3 = {orderUnit3[0] : 1, orderUnit3[1] : 2}
+        if (unit.getUnitID() == 'Unit1'):
+            tasks = sorted(unit.getTasks(), key = lambda x: neworder1[x.getTaskID()])
+        if (unit.getUnitID() == 'Unit2'):
+            tasks = sorted(unit.getTasks(), key = lambda x: neworder2[x.getTaskID()])
+        if (unit.getUnitID() == 'Unit3'):
+            tasks = sorted(unit.getTasks(), key = lambda x: neworder3[x.getTaskID()])
+
+        pendingTasks = []
+        for task in tasks:
+            if len(task.getInputBuffer()) > 0:
+                pendingTasks.append(task)
+        if len(pendingTasks) == 0:
+            return
+
+        for task in pendingTasks:
+            if task.taskID == 'Task9':
+                return task
+            nextTask = task.getNextTask()
+            if (nextTask.inputBufferAvalible(task.getInputBuffer()[0].getSize())):
+                return task

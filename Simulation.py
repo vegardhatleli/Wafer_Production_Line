@@ -1,3 +1,4 @@
+from itertools import permutations
 import sys
 import matplotlib.pyplot as plt
 import Wafer as W
@@ -93,6 +94,31 @@ def simulation(inputInterval):
     f.close()
     return productionLine.getTime(), productionLine.getBatchData()
 
+def simulationWithHeuristic(inputInterval, orderUnit1, orderUnit2, orderUnit3):
+    f = open("Task6/FinishedTimeWithDifferentHeuristic.txt", "a")
+    productionLine = createProductionLine()
+    while len(productionLine.getOutputBuffer()) < 20:
+        if (productionLine.getTime() % inputInterval == 0 and len(productionLine.getStorage()) > 0):
+            productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
+        productionLine.incrementTime()
+        for unit in productionLine.getUnits():
+            if unit.getDownCounter() > 0:
+                unit.decrementDownCounter()
+
+            if (unit.getDownCounter() == 0):
+                productionLine.passBatchToNextTask(unit)
+                unit.setAvailable()
+
+            if (unit.getAvailability()):
+                task = productionLine.findNextTaskGiverOrder(unit,orderUnit1, orderUnit2, orderUnit3)
+                if task != None:
+                    unit.runNextTask(task, productionLine.getTime())
+
+    f.write('{:<15} {:<15} {:<15} {:<15}\n'.format(f'{str(orderUnit1)}', f'{str(orderUnit2)}', f'{str(orderUnit3)}', f'{str(productionLine.getTime())}'))
+    f.close()
+    return
+
+
 
 def optimizeTimeBetweenBatches():
     graphData = []
@@ -128,8 +154,23 @@ def createBatchFinishedGraph(graphData):
 
     plt.savefig('Task5/ReduceIntervalBetweenBatches')
 
-#print(simulation())
-intervals, totalTimes, graphData = optimizeTimeBetweenBatches()
+def createPermutationTable():
+    f = open("Task6/FinishedTimeWithDifferentHeuristic.txt", "w")
+    f.write('{:<37} {:<29} {:<24} {:<15} \n'.format('Unit1 Heuristic ', 'Unit2 Heuristic ', 'Unit3 Heuristic ', 'Total time used'))
+    f.write('\n')
+    f.close()
+    unit1 = list(permutations(['Task1','Task3','Task6','Task9']))
+    unit2 = list(permutations(['Task2','Task5','Task7']))
+    unit3 = list(permutations(['Task4','Task8']))
 
-#createBatchFinishedGraph(graphData)
-createBatchFinishedTable(intervals, totalTimes)
+    for order1 in unit1:
+        for order2 in unit2:
+            for order3 in unit3:
+                simulationWithHeuristic(2, order1, order2, order3)
+    
+    return
+
+     
+
+
+createPermutationTable()
