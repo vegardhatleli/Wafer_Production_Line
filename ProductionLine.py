@@ -11,9 +11,16 @@ class ProductionLine:
         self.time = 0
         self.outputBuffer = []
         self.storage = []
+        self.batchData = []
 
     def getProductionLineID(self):
         return self.productionLineID
+
+    def addBatchData(self, time):
+        self.batchData.append(time)
+
+    def getBatchData(self):
+        return self.batchData
 
     def setProductionLineID(self, proproductionLineID):
         self.productionLineID = proproductionLineID
@@ -57,6 +64,7 @@ class ProductionLine:
             unit.getActiveTask().setBatch(None)
             unit.setActiveTask(None)
             print(f'{completedBatch.getBatchID()} done')
+            self.addBatchData(self.getTime())
             return
         unit.getActiveTask().getNextTask().addToInputBuffer(completedBatch)
         #self.getTaskByID(f'{taskID[:4]}{int(taskID[4:5])+1}').addToInputBuffer(completedBatch)

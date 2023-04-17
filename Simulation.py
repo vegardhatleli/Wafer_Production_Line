@@ -1,4 +1,5 @@
 import sys
+import matplotlib.pyplot as plt
 import Wafer as W
 import Batch as B
 import Task as T
@@ -68,12 +69,12 @@ def createProductionLine():
 
     return productionLine
 
-def simulation():
+def simulation(inputInterval):
     f = open("output.out", "w")
     sys.stdout = f
     productionLine = createProductionLine()
     while len(productionLine.getOutputBuffer()) < 20:
-        if (productionLine.getTime() % 1 == 0 and len(productionLine.getStorage()) > 0):
+        if (productionLine.getTime() % inputInterval == 0 and len(productionLine.getStorage()) > 0):
             productionLine.getUnits()[0].getTasks()[0].addToInputBuffer(productionLine.getNextBatch())
         productionLine.incrementTime()
         for unit in productionLine.getUnits():
@@ -88,7 +89,47 @@ def simulation():
                 task = productionLine.findNextTask(unit)
                 if task != None:
                     unit.runNextTask(task, productionLine.getTime())
-    return productionLine.getTime()
+    #createBatchFinishedGraph(productionLine.getBatchData())
+    f.close()
+    return productionLine.getTime(), productionLine.getBatchData()
 
 
-print(simulation())
+def optimizeTimeBetweenBatches():
+    graphData = []
+    totalTimes = []
+    intervals = [653.5, 500, 400, 300, 200, 100, 50, 25, 15, 10, 5, 2]
+    for interval in intervals:
+        time, data = simulation(interval)
+        totalTimes.append(time)
+        graphData.append(data)
+
+    return intervals, totalTimes, graphData
+
+def createBatchFinishedTable(intervals, totalTimes):
+    f = open("Task5/FinishedTimeWithDifferentInterval.txt", "w")
+    f.write('{:<15} {:<15}\n'.format('Time Interval', 'Total time used'))
+    for i in range(len(intervals)):
+        f.write("{:<15} {:<15}\n".format(f'{str(intervals[i])}', f'{str(totalTimes[i])}'))
+    f.close()
+
+def createBatchFinishedGraph(graphData):
+
+    batches = []
+    for i in range(len(graphData[0])):
+        batches.append(f'{i + 1}')
+
+    
+    for element in graphData:
+        plt.plot(batches, element)
+
+    plt.xlabel('Batch')
+    plt.ylabel('Time')
+    plt.title('Chart of finished time for each batch')
+
+    plt.savefig('Task5/ReduceIntervalBetweenBatches')
+
+#print(simulation())
+intervals, totalTimes, graphData = optimizeTimeBetweenBatches()
+
+#createBatchFinishedGraph(graphData)
+createBatchFinishedTable(intervals, totalTimes)
