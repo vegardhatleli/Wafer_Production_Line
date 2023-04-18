@@ -58,12 +58,12 @@ class ProductionLine:
             return
         completedBatch = unit.getActiveTask().getBatch()
         taskID = unit.getActiveTask().getTaskID()
-        #print(f'Task finished: {unit.getUnitID()} | {taskID} | {completedBatch.getBatchID()} | {self.getTime()}')
+        print(f'Task finished: {unit.getUnitID()} | {taskID} | {completedBatch.getBatchID()} | {self.getTime()}')
         if taskID == 'Task9':
             self.addOutputBuffer(completedBatch)
             unit.getActiveTask().setBatch(None)
             unit.setActiveTask(None)
-            #print(f'{completedBatch.getBatchID()} done')
+            print(f'{completedBatch.getBatchID()} done')
             self.addBatchData(self.getTime())
             return
         unit.getActiveTask().getNextTask().addToInputBuffer(completedBatch)

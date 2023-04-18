@@ -1,10 +1,10 @@
 NumberOfWafersPerBatch    Total time used
-20                        5726.4         
+20                        5724.4         
 21                        5891.6         
 22                        5893.3         
 23                        5881.4         
 24                        5932.5         
-25                        5701.3         
+25                        5697.3         
 26                        5867.1         
 27                        5838.3         
 28                        5932.3         
@@ -19,7 +19,7 @@ NumberOfWafersPerBatch    Total time used
 37                        5900.4         
 38                        5760.1         
 39                        5685.4         
-40                        5790.4         
+40                        5786.4         
 41                        5744.3         
 42                        5688.3         
 43                        5680.2         
@@ -29,4 +29,4 @@ NumberOfWafersPerBatch    Total time used
 47                        5765.1         
 48                        5704.3         
 49                        5777.5         
-50                        5733.3         
+50                        5729.3         

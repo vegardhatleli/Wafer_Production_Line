@@ -27,7 +27,7 @@ def createProductionLine(numberOfBatches, numberOfWafers, rest):
     if rest == 0:
         batches = createListOfBatches(numberOfBatches,numberOfWafers)
 
-    if rest <= 50:
+    if rest <= 50 and rest != 0:
         batches = createListOfBatches(numberOfBatches,numberOfWafers)
         wafers = createListOfWafers(rest)
         restBatch = B.Batch(f'Batch{numberOfBatches+1}', rest)
@@ -164,6 +164,18 @@ def createBatchFinishedTable(intervals, totalTimes):
         f.write("{:<25} {:<15}\n".format(f'{str(intervals[i])}', f'{str(totalTimes[i])}'))
     f.close()
 
+def createBarChart(xData, yDsta):
+    numberOfWafers = xData
+    totalTime = yDsta
+    for i in range(len(xData)):
+        plt.bar(numberOfWafers[i], totalTime[i], width=0.6)
+
+    plt.xlabel('Number of wafers in each batch')
+    plt.ylabel('Total time')
+    plt.title('Chart of finished time for each batch')
+
+    plt.savefig('Task7/NumberOfWafersPerBatchBarChart') 
+
 def createBatchFinishedGraph(graphData):
 
     batches = []
@@ -192,7 +204,7 @@ def createAllPossibleBatches():
         if (rest != 0 and rest + numberOfWafers < 50):
             rest = numberOfWafers + rest
         allPossibleBatches.append([numberOfBatches,numberOfWafers,rest])
-        print(f'Batches: {numberOfBatches}, wafers: {numberOfWafers} rest: {rest}')
+        #print(f'Batches: {numberOfBatches}, wafers: {numberOfWafers} rest: {rest}')
     return allPossibleBatches
 
 def createPermutationTable():
@@ -217,3 +229,5 @@ def createPermutationTable():
 #createPermutationTable()
 #numberOfWafersPerBatch, totalTimes = optimizeBatchSize()
 #createBatchFinishedTable(numberOfWafersPerBatch, totalTimes)
+#createBarChart(numberOfWafersPerBatch, totalTimes)
+simulation(2,20,50,0)
