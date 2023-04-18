@@ -8,6 +8,7 @@ import Unit as U
 import ProductionLine as PL
 import math
 
+## SETUP FUNCTIONS
 def createListOfWafers(numberOfWafers):
     listOfWafers = []
     for i in range(numberOfWafers):
@@ -87,8 +88,9 @@ def createProductionLine(numberOfBatches, numberOfWafers, rest):
 
     return productionLine
 
+## SIMULATIONS
 def simulation(inputInterval, numberOfBatches, numberOfWafers, rest):
-    f = open("Task4/20Batches50Wafers_SubOptimal.out", "w")
+    f = open("output.out", "w")
     sys.stdout = f
     productionLine = createProductionLine(numberOfBatches, numberOfWafers, rest)
     while_parameter = len(productionLine.getStorage())
@@ -108,7 +110,7 @@ def simulation(inputInterval, numberOfBatches, numberOfWafers, rest):
                 task = productionLine.findNextTask(unit)
                 if task != None:
                     unit.runNextTask(task, productionLine.getTime())
-    #createBatchFinishedGraph(productionLine.getBatchData())
+    print(productionLine.getTime())
     f.close()
     return productionLine.getTime(), productionLine.getBatchData()
 
@@ -136,6 +138,7 @@ def simulationWithHeuristic(inputInterval, orderUnit1, orderUnit2, orderUnit3):
     f.close()
     return
 
+## OPTIMIZE FUNTIONS
 def optimizeBatchSize():
     totalTimes = []
     numberOfWafersInBatch = []
@@ -157,6 +160,7 @@ def optimizeTimeBetweenBatches():
 
     return intervals, totalTimes, graphData
 
+## CREATE PLOTS
 def createBatchFinishedTable(intervals, totalTimes):
     f = open("Task7/NumberOfWafersPerBatch.txt", "w")
     f.write('{:<25} {:<15}\n'.format('NumberOfWafersPerBatch', 'Total time used'))
@@ -177,11 +181,9 @@ def createBarChart(xData, yDsta):
     plt.savefig('Task7/NumberOfWafersPerBatchBarChart') 
 
 def createBatchFinishedGraph(graphData):
-
     batches = []
     for i in range(len(graphData[0])):
         batches.append(f'{i + 1}')
-
     
     for element in graphData:
         plt.plot(batches, element)
@@ -191,21 +193,6 @@ def createBatchFinishedGraph(graphData):
     plt.title('Chart of finished time for each batch')
 
     plt.savefig('Task5/ReduceIntervalBetweenBatches')
-
-def createAllPossibleBatches():
-    allPossibleBatches = []
-    for i in range(20,51):
-        numberOfWafers = i
-        numberOfBatches = 1000 // i
-        rest = 1000 % i
-        if (rest != 0 and rest + numberOfWafers >= 50):
-            rest = numberOfWafers + rest
-            numberOfBatches -= 1
-        if (rest != 0 and rest + numberOfWafers < 50):
-            rest = numberOfWafers + rest
-        allPossibleBatches.append([numberOfBatches,numberOfWafers,rest])
-        #print(f'Batches: {numberOfBatches}, wafers: {numberOfWafers} rest: {rest}')
-    return allPossibleBatches
 
 def createHeuristicTable():
     f = open("Task6/FinishedTimeWithDifferentHeuristic.txt", "w")
@@ -223,11 +210,27 @@ def createHeuristicTable():
     
     return
 
-     
+## SUPPORTFINCTIONS
+#Retruns all possible permutations of batchsizes
+def createAllPossibleBatches():
+    allPossibleBatches = []
+    for i in range(20,51):
+        numberOfWafers = i
+        numberOfBatches = 1000 // i
+        rest = 1000 % i
+        if (rest != 0 and rest + numberOfWafers >= 50):
+            rest = numberOfWafers + rest
+            numberOfBatches -= 1
+        if (rest != 0 and rest + numberOfWafers < 50):
+            rest = numberOfWafers + rest
+        allPossibleBatches.append([numberOfBatches,numberOfWafers,rest])
+        #print(f'Batches: {numberOfBatches}, wafers: {numberOfWafers} rest: {rest}')
+    return allPossibleBatches
 
 
-createHeuristicTable()
-#numberOfWafersPerBatch, totalTimes = optimizeBatchSize()
-#createBatchFinishedTable(numberOfWafersPerBatch, totalTimes)
-#createBarChart(numberOfWafersPerBatch, totalTimes)
-#simulation(653.5,20,50,0)
+## MAIN
+#The simulation with out fastest total time
+#For result look in the output.out
+simulation(1,26,36,64)
+
+
