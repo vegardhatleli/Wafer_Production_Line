@@ -88,7 +88,7 @@ def createProductionLine(numberOfBatches, numberOfWafers, rest):
     return productionLine
 
 def simulation(inputInterval, numberOfBatches, numberOfWafers, rest):
-    f = open("output.out", "w")
+    f = open("Task4/20Batches50Wafers_SubOptimal.out", "w")
     sys.stdout = f
     productionLine = createProductionLine(numberOfBatches, numberOfWafers, rest)
     while_parameter = len(productionLine.getStorage())
@@ -132,7 +132,7 @@ def simulationWithHeuristic(inputInterval, orderUnit1, orderUnit2, orderUnit3):
                 if task != None:
                     unit.runNextTask(task, productionLine.getTime())
 
-    f.write('{:<15} {:<15} {:<15} {:<15}\n'.format(f'{str(orderUnit1)}', f'{str(orderUnit2)}', f'{str(orderUnit3)}', f'{str(productionLine.getTime())}'))
+    f.write('{:<15} {:<15} {:<15} {:<15}\n'.format(f'{str(orderUnit1)} |' , f'{str(orderUnit2)} |', f'{str(orderUnit3)} |', f'{str(productionLine.getTime())}'))
     f.close()
     return
 
@@ -207,7 +207,7 @@ def createAllPossibleBatches():
         #print(f'Batches: {numberOfBatches}, wafers: {numberOfWafers} rest: {rest}')
     return allPossibleBatches
 
-def createPermutationTable():
+def createHeuristicTable():
     f = open("Task6/FinishedTimeWithDifferentHeuristic.txt", "w")
     f.write('{:<37} {:<29} {:<24} {:<15} \n'.format('Unit1 Heuristic ', 'Unit2 Heuristic ', 'Unit3 Heuristic ', 'Total time used'))
     f.write('\n')
@@ -226,8 +226,8 @@ def createPermutationTable():
      
 
 
-#createPermutationTable()
+createHeuristicTable()
 #numberOfWafersPerBatch, totalTimes = optimizeBatchSize()
 #createBatchFinishedTable(numberOfWafersPerBatch, totalTimes)
 #createBarChart(numberOfWafersPerBatch, totalTimes)
-simulation(2,20,50,0)
+#simulation(653.5,20,50,0)

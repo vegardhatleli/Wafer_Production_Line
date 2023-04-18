@@ -1,0 +1,19 @@
+Task started: Unit1 | Task1 | Batch1 | 0.1
+Task finished: Unit1 | Task1 | Batch1 | 27.1
+Task started: Unit2 | Task2 | Batch1 | 27.1
+Task finished: Unit2 | Task2 | Batch1 | 204.1
+Task started: Unit1 | Task3 | Batch1 | 204.2
+Task finished: Unit1 | Task3 | Batch1 | 266.2
+Task started: Unit3 | Task4 | Batch1 | 266.2
+Task finished: Unit3 | Task4 | Batch1 | 418.2
+Task started: Unit2 | Task5 | Batch1 | 418.3
+Task finished: Unit2 | Task5 | Batch1 | 460.3
+Task started: Unit1 | Task6 | Batch1 | 460.4
+Task finished: Unit1 | Task6 | Batch1 | 487.4
+Task started: Unit2 | Task7 | Batch1 | 487.4
+Task finished: Unit2 | Task7 | Batch1 | 539.4
+Task started: Unit3 | Task8 | Batch1 | 539.4
+Task finished: Unit3 | Task8 | Batch1 | 636.4
+Task started: Unit1 | Task9 | Batch1 | 636.5
+Task finished: Unit1 | Task9 | Batch1 | 653.5
+Batch1 done
