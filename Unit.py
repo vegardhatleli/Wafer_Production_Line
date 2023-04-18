@@ -61,5 +61,3 @@ class Unit:
         self.setDownCounter(float(task.getProcessingTime()) * float(task.getBatch().getSize()) + 2.0)
         self.setOccupied()
         print(f'Task started: {self.getUnitID()} | {task.getTaskID()} | {task.getBatch().getBatchID()} | {time}')
-
-    #preformTimeStep
